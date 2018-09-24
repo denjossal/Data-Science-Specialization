@@ -1,8 +1,10 @@
 #Libs
-library(plyr)
 library(dplyr)
+library(xlsx)
 #Point 1: Merges the training and the test sets to create one data set.
-#Unzip file on folder
+#Download file '.zip' and unzip file on folder, on folder change directory on R
+#Path example : C:\\Users\\User\\Documents\\Data Science Specialization\\Getting and Cleaning Data\\UCI HAR Dataset
+setwd('~\\UCI HAR Dataset')
 #Load file from unziped files
 #Load url files
 #Root
@@ -142,5 +144,6 @@ newDataSet %>% summarise_all(mean)
 newDataSet %>% summarise_all(sd)
 
 #Point 5: From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
-t<-addmargins(table(newDataSet$label, newDataSet$subject, dnn = c("SUBJECT", "ACTIVITY")))
+t<-addmargins(table(newDataSet$label, newDataSet$subject, dnn = c("ACTIVITY","SUBJECT")))
+write.xlsx(t, 'tidy_data.xlsx')
 View(t)
