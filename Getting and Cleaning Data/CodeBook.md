@@ -1,49 +1,99 @@
-# CodeBook.md
-This CodeBook describes variables, data, and transformations used to clean up the data.
-## Variables
-fp: Path for file **features.txt**
-cont: Counter to put **ACTIVITY LABEL**
+# Code Book
 
-Variables for **Test** file paths:
+This code book summarizes the resulting data fields in `tidy.txt`.
 
-* tps: Path for file **subject_test.txt**
-* tpx: Path for file **X_test.txt**
-* tpy: Path for file **y_test.txt**
+## Identifiers
 
-Variables for **Train** file paths:
+* `subject` - The ID of the test subject
+* `activity` - The type of activity performed when the corresponding measurements were taken
 
-* trps: Path for file **subject_train**
-* trpx: Path for file **X_train.txt**
-* trpy: Path for file **y_train.txt**
+## Measurements
 
-## Data
-* fpFile: File with all features
+* `tBodyAccMeanX`
+* `tBodyAccMeanY`
+* `tBodyAccMeanZ`
+* `tBodyAccStdX`
+* `tBodyAccStdY`
+* `tBodyAccStdZ`
+* `tGravityAccMeanX`
+* `tGravityAccMeanY`
+* `tGravityAccMeanZ`
+* `tGravityAccStdX`
+* `tGravityAccStdY`
+* `tGravityAccStdZ`
+* `tBodyAccJerkMeanX`
+* `tBodyAccJerkMeanY`
+* `tBodyAccJerkMeanZ`
+* `tBodyAccJerkStdX`
+* `tBodyAccJerkStdY`
+* `tBodyAccJerkStdZ`
+* `tBodyGyroMeanX`
+* `tBodyGyroMeanY`
+* `tBodyGyroMeanZ`
+* `tBodyGyroStdX`
+* `tBodyGyroStdY`
+* `tBodyGyroStdZ`
+* `tBodyGyroJerkMeanX`
+* `tBodyGyroJerkMeanY`
+* `tBodyGyroJerkMeanZ`
+* `tBodyGyroJerkStdX`
+* `tBodyGyroJerkStdY`
+* `tBodyGyroJerkStdZ`
+* `tBodyAccMagMean`
+* `tBodyAccMagStd`
+* `tGravityAccMagMean`
+* `tGravityAccMagStd`
+* `tBodyAccJerkMagMean`
+* `tBodyAccJerkMagStd`
+* `tBodyGyroMagMean`
+* `tBodyGyroMagStd`
+* `tBodyGyroJerkMagMean`
+* `tBodyGyroJerkMagStd`
+* `fBodyAccMeanX`
+* `fBodyAccMeanY`
+* `fBodyAccMeanZ`
+* `fBodyAccStdX`
+* `fBodyAccStdY`
+* `fBodyAccStdZ`
+* `fBodyAccMeanFreqX`
+* `fBodyAccMeanFreqY`
+* `fBodyAccMeanFreqZ`
+* `fBodyAccJerkMeanX`
+* `fBodyAccJerkMeanY`
+* `fBodyAccJerkMeanZ`
+* `fBodyAccJerkStdX`
+* `fBodyAccJerkStdY`
+* `fBodyAccJerkStdZ`
+* `fBodyAccJerkMeanFreqX`
+* `fBodyAccJerkMeanFreqY`
+* `fBodyAccJerkMeanFreqZ`
+* `fBodyGyroMeanX`
+* `fBodyGyroMeanY`
+* `fBodyGyroMeanZ`
+* `fBodyGyroStdX`
+* `fBodyGyroStdY`
+* `fBodyGyroStdZ`
+* `fBodyGyroMeanFreqX`
+* `fBodyGyroMeanFreqY`
+* `fBodyGyroMeanFreqZ`
+* `fBodyAccMagMean`
+* `fBodyAccMagStd`
+* `fBodyAccMagMeanFreq`
+* `fBodyBodyAccJerkMagMean`
+* `fBodyBodyAccJerkMagStd`
+* `fBodyBodyAccJerkMagMeanFreq`
+* `fBodyBodyGyroMagMean`
+* `fBodyBodyGyroMagStd`
+* `fBodyBodyGyroMagMeanFreq`
+* `fBodyBodyGyroJerkMagMean`
+* `fBodyBodyGyroJerkMagStd`
+* `fBodyBodyGyroJerkMagMeanFreq`
 
-## Test Data
-* tpsFile: Test file with **subject** data
-* tpxFile: Test file with **X_test** data
-* tpyFile: Test file with **y_test.txt** data
-* tpxFileNew: Test file with headers of features
-* tpxFileNew2: Test file with all variables and headers
+## Activity Labels
 
-
-## Train Data
-* trpsFile: Test file with **subject** data
-* trpxFile: Train file with **X_train** data
-* trpyFile: Train file with **y_train.txt** data
-* trpxFileNew: Train file with headers of features
-* tpxFileNew2: Train file with all variables and headers
-
-##Tidy Data
-* t: Tidy Data
-
-## Transformations
-* Test files:
-  * tpxFileNew2: New data set with **tpyFile** and **tpxFileNew**
-  * tpxFileNew2: Add new column with **tpsFile**
-* Train Files:
-  * trpxFileNew2: New data set with **tpyFile** and **tpxFileNew**
-  * trpxFileNew2: Add new column with **tpsFile**
-
-## Merged data
-* mergedData: Has **tpxFileNew2** and **tpxFileNew2** merged
+* `WALKING` (value `1`): subject was walking during the test
+* `WALKING_UPSTAIRS` (value `2`): subject was walking up a staircase during the test
+* `WALKING_DOWNSTAIRS` (value `3`): subject was walking down a staircase during the test
+* `SITTING` (value `4`): subject was sitting during the test
+* `STANDING` (value `5`): subject was standing during the test
+* `LAYING` (value `6`): subject was laying down during the test

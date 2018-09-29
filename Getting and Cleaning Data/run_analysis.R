@@ -1,149 +1,50 @@
-#Libs
-library(dplyr)
-library(xlsx)
-#Point 1: Merges the training and the test sets to create one data set.
-#Download file '.zip' and unzip file on folder, on folder change directory on R
-#Path example : C:\\Users\\User\\Documents\\Data Science Specialization\\Getting and Cleaning Data\\UCI HAR Dataset
-setwd('~\\UCI HAR Dataset')
-#Load file from unziped files
-#Load url files
-#Root
-fp <- "./features.txt"
-#Test
-tps <- "./test/subject_test.txt"
-tpx <- "./test/X_test.txt"
-tpy <- "./test/y_test.txt"
+library(reshape2)
 
-#Train
-trps <- "./train/subject_train.txt"
-trpx <- "./train/X_train.txt"
-trpy <- "./train/y_train.txt"
+filename <- "getdata_dataset.zip"
 
-#Read Test files
-#features headers
-fpFile <- read.table(fp, header = FALSE)
-
-#subject file
-tpsFile <- readLines(tps)
-
-#test file
-tpxFile <- read.table(tpx, header = FALSE)
-
-#label file
-tpyFile <- readLines(tpy)
-#Rename label file
-#Point 4: Appropriately labels the data set with descriptive variable names.
-cont <- 1
-for(i in tpyFile){
-  if(i=="1"){
-    tpyFile[cont]="WALKING"
-  }
-  else if(i=="2"){
-    tpyFile[cont]="WALKING_UPSTAIRS"
-  }
-  else if(i=="3"){
-    tpyFile[cont]="WALKING_DOWNSTAIRS"
-  }
-  else if(i=="4"){
-    tpyFile[cont]="SITTING"
-  }
-  else if(i=="5"){
-    tpyFile[cont]="STANDING"
-  }
-  else if(i=="6"){
-    tpyFile[cont]="LAYING"
-  }
-  else{
-    tpyFile[cont]="UNDEFINED LABEL"
-  }
-  cont <- cont+1     
+## Download and unzip the dataset:
+if (!file.exists(filename)){
+  fileURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip "
+  download.file(fileURL, filename, method="curl")
+}  
+if (!file.exists("UCI HAR Dataset")) { 
+  unzip(filename) 
 }
 
-#Add features headers fpFile has V1 and V2 columns
-#Point 3: Uses descriptive activity names to name the activities in the data set
-tpxFileNew <- setNames(tpxFile, fpFile$V2)
+# Load activity labels + features
+activityLabels <- read.table("UCI HAR Dataset/activity_labels.txt")
+activityLabels[,2] <- as.character(activityLabels[,2])
+features <- read.table("UCI HAR Dataset/features.txt")
+features[,2] <- as.character(features[,2])
 
-#Add new column with label data
-tpxFileNew2 <- cbind(tpyFile, tpxFileNew)
-
-#Rename tpyFile with label
-names(tpxFileNew2)[1] <- "label"
-
-#Add new column with subject
-tpxFileNew2 <- cbind(tpsFile, tpxFileNew2)
-
-#Rename 'tpsFile' with 'subject'
-names(tpxFileNew2)[1] <- "subject"
+# Extract only the data on mean and standard deviation
+featuresWanted <- grep(".*mean.*|.*std.*", features[,2])
+featuresWanted.names <- features[featuresWanted,2]
+featuresWanted.names = gsub('-mean', 'Mean', featuresWanted.names)
+featuresWanted.names = gsub('-std', 'Std', featuresWanted.names)
+featuresWanted.names <- gsub('[-()]', '', featuresWanted.names)
 
 
-#Read Train files
-#subject file
-trpsFile <- readLines(trps)
+# Load the datasets
+train <- read.table("UCI HAR Dataset/train/X_train.txt")[featuresWanted]
+trainActivities <- read.table("UCI HAR Dataset/train/Y_train.txt")
+trainSubjects <- read.table("UCI HAR Dataset/train/subject_train.txt")
+train <- cbind(trainSubjects, trainActivities, train)
 
-#train file
-trpxFile <- read.table(trpx, header = FALSE)
+test <- read.table("UCI HAR Dataset/test/X_test.txt")[featuresWanted]
+testActivities <- read.table("UCI HAR Dataset/test/Y_test.txt")
+testSubjects <- read.table("UCI HAR Dataset/test/subject_test.txt")
+test <- cbind(testSubjects, testActivities, test)
 
-#label file
-trpyFile <- readLines(trpy)
-#Point 4: Appropriately labels the data set with descriptive variable names.
-#Rename label file
-cont <- 1
-for(i in trpyFile){
-  if(i=="1"){
-    trpyFile[cont]="WALKING"
-  }
-  else if(i=="2"){
-    trpyFile[cont]="WALKING_UPSTAIRS"
-  }
-  else if(i=="3"){
-    trpyFile[cont]="WALKING_DOWNSTAIRS"
-  }
-  else if(i=="4"){
-    trpyFile[cont]="SITTING"
-  }
-  else if(i=="5"){
-    trpyFile[cont]="STANDING"
-  }
-  else if(i=="6"){
-    trpyFile[cont]="LAYING"
-  }
-  else{
-    trpyFile[cont]="UNDEFINED LABEL"
-  }
-  cont <- cont+1     
-}
+# merge datasets and add labels
+allData <- rbind(train, test)
+colnames(allData) <- c("subject", "activity", featuresWanted.names)
 
-#Add features headers fpFile has V1 and V2 columns
-#Point 3: Uses descriptive activity names to name the activities in the data set
-trpxFileNew <- setNames(trpxFile, fpFile$V2)
+# turn activities & subjects into factors
+allData$activity <- factor(allData$activity, levels = activityLabels[,1], labels = activityLabels[,2])
+allData$subject <- as.factor(allData$subject)
 
-#Add new column with label data
-trpxFileNew2 <- cbind(trpyFile, trpxFileNew)
+allData.melted <- melt(allData, id = c("subject", "activity"))
+allData.mean <- dcast(allData.melted, subject + activity ~ variable, mean)
 
-#Rename tpyFile with label
-names(trpxFileNew2)[1] <- "label"
-
-#Add new column with subject
-trpxFileNew2 <- cbind(trpsFile, trpxFileNew2)
-
-#Rename 'trpsFile' with 'subject'
-names(trpxFileNew2)[1] <- "subject"
-
-
-#Merge Test and Train Data
-mergedData <- rbind(trpxFileNew2, tpxFileNew2)
-
-#DataSet with mean an std
-newDataSet <- subset(mergedData, select = grepl("subject|label|mean|std", names(mergedData)))
-
-#Point 2: Extracts only the measurements on the mean and standard deviation for each measurement.
-
-#View summary of new newDataSet
-summary(newDataSet)
-newDataSet %>% summarise_all(mean)
-newDataSet %>% summarise_all(sd)
-
-#Point 5: From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
-t<-addmargins(table(newDataSet$label, newDataSet$subject, dnn = c("ACTIVITY","SUBJECT")))
-write.xlsx(t, 'tidy_data.xlsx')
-View(t)
+write.table(allData.mean, "tidy.txt", row.names = FALSE, quote = FALSE)
